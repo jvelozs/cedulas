@@ -1,1 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Cédulas</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <!-- Contenedor principal -->
+    <div class="flex items-center justify-center h-screen">
+        <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
+            <h1 class="text-2xl font-semibold text-center text-blue-600 mb-6">Consulta de Cédulas</h1>
+            <p class="text-center text-gray-600 mb-4">Ingresa una cédula para obtener la información</p>
+
+            <!-- Formulario -->
+            <form id="cedulaForm" class="space-y-4">
+                <div>
+                    <label for="cedula" class="block text-lg font-medium text-gray-700 mb-2">Número de Cédula</label>
+                    <input type="text" id="cedula" name="cedula" maxlength="10" required class="block w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400" placeholder="Ingrese la cédula">
+                </div>
+                <button type="submit" class="w-full bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">Buscar</button>
+            </form>
+
+            <!-- Sección de resultados -->
+            <div id="resultado" class="mt-6 hidden bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <h2 class="text-xl font-bold text-blue-600 mb-4">Resultado:</h2>
+                <p class="text-gray-700"><strong>Apellidos:</strong> <span id="apellidos"></span></p>
+                <p class="text-gray-700"><strong>Nombres:</strong> <span id="nombres"></span></p>
+                <p class="text-gray-700"><strong>Fecha de Nacimiento:</strong> <span id="fecha_nacimiento"></span></p>
+                <p class="text-gray-700"><strong>Estado Civil:</strong> <span id="estado_civil"></span></p>
+            </div>
+
+            <!-- Indicador de carga -->
+            <div id="loading" class="mt-4 hidden">
+                <div class="flex justify-center items-center space-x-2">
+                    <div class="w-4 h-4 bg-blue-500 rounded-full animate-bounce"></div>
+                    <div class="w-4 h-4 bg-blue-500 rounded-full animate-bounce delay-150"></div>
+                    <div class="w-4 h-4 bg-blue-500 rounded-full animate-bounce delay-300"></div>
+                </div>
+                <p class="text-center text-blue-600 mt-2">Buscando datos...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('cedulaForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Mostrar el loader
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('resultado').classList.add('hidden');
+
+            const cedula = document.getElementById('cedula').value;
+
+            // Llamar al backend para buscar la cédula
+            const response = await fetch('/buscar_cedula', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ cedula: cedula })
+            });
+
+            const data = await response.json();
+
+            // Mostrar los resultados
+            document.getElementById('apellidos').textContent = data.apellidos;
+            document.getElementById('nombres').textContent = data.nombres;
+            document.getElementById('fecha_nacimiento').textContent = data.fecha_nacimiento;
+            document.getElementById('estado_civil').textContent = data.estado_civil;
+
+            // Ocultar el loader y mostrar el resultado
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('resultado').classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>
 
