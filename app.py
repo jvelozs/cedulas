@@ -25,6 +25,9 @@ def buscar_cedula():
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-gpu")
+    
+    # Asegurar que Chrome esté ubicado correctamente
+    chrome_options.binary_location = "/usr/bin/google-chrome"
 
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
     driver.get("https://si.secap.gob.ec/sisecap/logeo_web/usuario_nuevo.php")
